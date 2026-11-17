@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Boutique En Ligne</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Barre de navigation -->
+    <header class="navbar">
+        <div class="container nav-content">
+            <a href="#" class="logo"><i class="fas fa-store"></i> Sameh<span>Shop</span></a>
+            <div class="nav-actions">
+                <button class="btn btn-primary" id="openAddModalBtn">
+                    <i class="fas fa-plus"></i> Ajouter un produit
+                </button>
+                <button class="btn btn-outline cart-btn" id="openCartBtn">
+                    <i class="fas fa-shopping-cart"></i> Panier (<span id="cartCount">0</span>)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Bannière -->
+    <section class="hero">
+        <div class="container">
+            <h1>Catalogue & Boutique</h1>
+            <p>Gérez vos produits, importez vos photos et recevez vos commandes directement sur WhatsApp.</p>
+        </div>
+    </section>
+
+    <!-- Grille des produits -->
+    <main class="container">
+        <div class="toolbar">
+            <h2>Nos Produits (<span id="productCount">0</span>)</h2>
+            <input type="text" id="searchInput" placeholder="Rechercher un produit...">
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Les produits s'affichent ici dynamiquement -->
+        </div>
+    </main>
+
+    <!-- MODALE 1 : Ajouter un produit -->
+    <div class="modal" id="addProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un nouveau produit</h3>
+                <button class="close-btn" id="closeAddModal">&times;</button>
+            </div>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label for="prodName">Nom du produit *</label>
+                    <input type="text" id="prodName" placeholder="Ex: Pc Portable HP Pavilion" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prodPrice">Prix (TND) *</label>
+                        <input type="number" id="prodPrice" step="0.01" min="0" placeholder="Ex: 1450" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prodCategory">Catégorie</label>
+                        <select id="prodCategory">
+                            <option value="Informatique">Informatique</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Accessoires">Accessoires</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prodDesc">Détails / Description *</label>
+                    <textarea id="prodDesc" rows="3" placeholder="Caractéristiques, état, garantie..." required></textarea>
+                </div>
+
+                <!-- Dans le formulaire #addProductForm -->
+<div class="form-group">
+    <label for="prodImage">Photos du produit (sélectionnez une ou plusieurs images) *</label>
+    <div class="file-upload-box">
+        <input type="file" id="prodImage" accept="image/*" multiple required>
+        <div class="image-preview-grid" id="imagePreview">
+            <span>Aperçu des images sélectionnées</span>
+        </div>
+    </div>
+</div>
+
+                <button type="submit" class="btn btn-primary full-width">
+                    <i class="fas fa-check"></i> Enregistrer le produit
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODALE 2 : Panier -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Votre Panier</h3>
+                <button class="close-btn" id="closeCartModal">&times;</button>
+            </div>
+            <div id="cartItemsList" class="cart-list"></div>
+            <div class="cart-footer">
+                <div class="cart-total">Total : <span id="cartTotal">0</span> TND</div>
+                <button class="btn btn-whatsapp full-width" id="whatsappOrderBtn">
+                    <i class="fab fa-whatsapp"></i> Commander sur WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- MODALE 3 : Zoom Photo -->
+    <div class="modal zoom-modal" id="zoomModal">
+    <button class="close-zoom" id="closeZoomModal">&times;</button>
+    <button class="zoom-nav prev" id="prevImgBtn">&#10094;</button>
+    <div class="zoom-container">
+        <img id="zoomedImg" src="" alt="Zoom produit">
+        <p id="zoomCaption"></p>
+        <div class="zoom-thumbs" id="zoomThumbs"></div>
+    </div>
+    <button class="zoom-nav next" id="nextImgBtn">&#10095;</button>
+</div>
+</body>
+</html>
