@@ -3,65 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ma Boutique En Ligne</title>
+    <meta name="theme-color" content="#111827">
+    <title>SamehShop - Boutique moderne</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Barre de navigation -->
     <header class="navbar">
         <div class="container nav-content">
-            <a href="#" class="logo"><i class="fas fa-store"></i> Sameh<span>Shop</span></a>
+            <a href="#" class="logo" aria-label="SamehShop, accueil">
+                <span class="logo-mark"><i class="fas fa-bag-shopping"></i></span>
+                <span>Sameh<span class="logo-accent">Shop</span></span>
+            </a>
             <div class="nav-actions">
                 <button class="btn btn-primary" id="openAddModalBtn">
-                    <i class="fas fa-plus"></i> Ajouter un produit
+                    <i class="fas fa-plus"></i>
+                    <span>Ajouter</span>
                 </button>
                 <button class="btn btn-outline cart-btn" id="openCartBtn">
-                    <i class="fas fa-shopping-cart"></i> Panier (<span id="cartCount">0</span>)
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Panier</span>
+                    <span class="cart-count" id="cartCount">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Bannière -->
     <section class="hero">
-        <div class="container">
-            <h1>Catalogue & Boutique</h1>
-            <p>Gérez vos produits, importez vos photos et recevez vos commandes directement sur WhatsApp.</p>
+        <div class="container hero-content">
+            <div class="hero-copy">
+                <span class="eyebrow"><i class="fas fa-sparkles"></i> Nouveautés sélectionnées</span>
+                <h1>La technologie au meilleur prix</h1>
+                <p>Découvrez une sélection de produits modernes, pratiques et accessibles en quelques clics.</p>
+                <a class="hero-link" href="#catalogue">Voir le catalogue <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+                <div class="hero-orbit orbit-one"></div>
+                <div class="hero-orbit orbit-two"></div>
+                <div class="hero-icon"><i class="fas fa-laptop"></i></div>
+            </div>
         </div>
     </section>
 
-    <!-- Grille des produits -->
-    <main class="container">
+    <main class="container catalogue" id="catalogue">
         <div class="toolbar">
-            <h2>Nos Produits (<span id="productCount">0</span>)</h2>
-            <input type="text" id="searchInput" placeholder="Rechercher un produit...">
+            <div>
+                <span class="section-kicker">Notre sélection</span>
+                <h2>Nos produits <span class="count" id="productCount">0</span></h2>
+            </div>
+            <label class="search-box" for="searchInput">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un produit">
+            </label>
         </div>
 
-        <div class="products-grid" id="productsGrid">
-            <!-- Les produits s'affichent ici dynamiquement -->
+        <div class="category-list" id="categoryList" aria-label="Filtrer par catégorie">
+            <button class="category-chip active" data-category="Tous">Tous</button>
         </div>
+
+        <div class="products-grid" id="productsGrid"></div>
     </main>
 
-    <!-- MODALE 1 : Ajouter un produit -->
     <div class="modal" id="addProductModal">
-        <div class="modal-content">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="addProductTitle">
             <div class="modal-header">
-                <h3>Ajouter un nouveau produit</h3>
-                <button class="close-btn" id="closeAddModal">&times;</button>
+                <div>
+                    <span class="section-kicker">Nouvel article</span>
+                    <h3 id="addProductTitle">Ajouter un produit</h3>
+                </div>
+                <button class="close-btn" id="closeAddModal" aria-label="Fermer">&times;</button>
             </div>
             <form id="addProductForm">
                 <div class="form-group">
                     <label for="prodName">Nom du produit *</label>
-                    <input type="text" id="prodName" placeholder="Ex: Pc Portable HP Pavilion" required>
+                    <input type="text" id="prodName" placeholder="Ex : PC Portable HP Pavilion" required>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="prodPrice">Prix (TND) *</label>
-                        <input type="number" id="prodPrice" step="0.01" min="0" placeholder="Ex: 1450" required>
+                        <input type="number" id="prodPrice" step="0.01" min="0" placeholder="1450" required>
                     </div>
                     <div class="form-group">
                         <label for="prodCategory">Catégorie</label>
@@ -73,23 +96,19 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="prodDesc">Détails / Description *</label>
                     <textarea id="prodDesc" rows="3" placeholder="Caractéristiques, état, garantie..." required></textarea>
                 </div>
-
-                <!-- Dans le formulaire #addProductForm -->
-<div class="form-group">
-    <label for="prodImage">Photos du produit (sélectionnez une ou plusieurs images) *</label>
-    <div class="file-upload-box">
-        <input type="file" id="prodImage" accept="image/*" multiple required>
-        <div class="image-preview-grid" id="imagePreview">
-            <span>Aperçu des images sélectionnées</span>
-        </div>
-    </div>
-</div>
-
+                <div class="form-group">
+                    <label for="prodImage">Photos du produit *</label>
+                    <div class="file-upload-box">
+                        <input type="file" id="prodImage" accept="image/*" multiple required>
+                        <div class="image-preview-grid" id="imagePreview">
+                            <span>Aperçu des images sélectionnées</span>
+                        </div>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary full-width">
                     <i class="fas fa-check"></i> Enregistrer le produit
                 </button>
@@ -97,12 +116,11 @@
         </div>
     </div>
 
-    <!-- MODALE 2 : Panier -->
     <div class="modal" id="cartModal">
-        <div class="modal-content">
+        <div class="modal-content cart-modal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
             <div class="modal-header">
-                <h3>Votre Panier</h3>
-                <button class="close-btn" id="closeCartModal">&times;</button>
+                <h3 id="cartTitle">Votre panier</h3>
+                <button class="close-btn" id="closeCartModal" aria-label="Fermer">&times;</button>
             </div>
             <div id="cartItemsList" class="cart-list"></div>
             <div class="cart-footer">
@@ -114,17 +132,18 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-    <!-- MODALE 3 : Zoom Photo -->
     <div class="modal zoom-modal" id="zoomModal">
-    <button class="close-zoom" id="closeZoomModal">&times;</button>
-    <button class="zoom-nav prev" id="prevImgBtn">&#10094;</button>
-    <div class="zoom-container">
-        <img id="zoomedImg" src="" alt="Zoom produit">
-        <p id="zoomCaption"></p>
-        <div class="zoom-thumbs" id="zoomThumbs"></div>
+        <button class="close-zoom" id="closeZoomModal" aria-label="Fermer la galerie">&times;</button>
+        <button class="zoom-nav prev" id="prevImgBtn" aria-label="Photo précédente">&#10094;</button>
+        <div class="zoom-container">
+            <img id="zoomedImg" src="" alt="Zoom produit">
+            <p id="zoomCaption"></p>
+            <div class="zoom-thumbs" id="zoomThumbs"></div>
+        </div>
+        <button class="zoom-nav next" id="nextImgBtn" aria-label="Photo suivante">&#10095;</button>
     </div>
-    <button class="zoom-nav next" id="nextImgBtn">&#10095;</button>
-</div>
+
+    <div class="toast" id="toast" role="status"></div>
+    <script src="script.js"></script>
 </body>
 </html>

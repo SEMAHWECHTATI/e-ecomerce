@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
             category: "Électronique",
             desc: "Microcontrôleur ATmega328P neuf avec câble USB inclus.",
             images: [
-                "https://via.placeholder.com/400x250?text=Arduino+Face",
-                "https://via.placeholder.com/400x250?text=Arduino+Dos"
+                "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=900&q=85",
+                "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85"
             ]
         }
     ];
@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const productsGrid = document.getElementById("productsGrid");
     const productCount = document.getElementById("productCount");
     const searchInput = document.getElementById("searchInput");
+    const categoryList = document.getElementById("categoryList");
+    const toast = document.getElementById("toast");
+    let activeCategory = "Tous";
 
     const addProductModal = document.getElementById("addProductModal");
     const openAddModalBtn = document.getElementById("openAddModalBtn");
@@ -52,17 +55,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextImgBtn = document.getElementById("nextImgBtn");
 
     // 1. Afficher les produits
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function renderCategories() {
+        const categories = ["Tous", ...new Set(products.map(product => product.category).filter(Boolean))];
+        categoryList.innerHTML = categories.map(category => `
+            <button class="category-chip ${category === activeCategory ? "active" : ""}" data-category="${escapeHtml(category)}">
+                ${escapeHtml(category)}
+            </button>
+        `).join("");
+    }
+
     function renderProducts(filter = "") {
         productsGrid.innerHTML = "";
         const filtered = products.filter(p =>
-            p.name.toLowerCase().includes(filter.toLowerCase()) ||
-            p.category.toLowerCase().includes(filter.toLowerCase())
+            (activeCategory === "Tous" || p.category === activeCategory) &&
+            (p.name.toLowerCase().includes(filter.toLowerCase()) ||
+            p.category.toLowerCase().includes(filter.toLowerCase()))
         );
 
         productCount.textContent = filtered.length;
 
         if (filtered.length === 0) {
-            productsGrid.innerHTML = "<p>Aucun produit trouvé.</p>";
+            productsGrid.innerHTML = '<div class="empty-state"><p>Aucun produit ne correspond à votre recherche.</p></div>';
             return;
         }
 
@@ -79,12 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="delete-prod-btn" title="Supprimer" onclick="deleteProduct(${prod.id})">
                     <i class="fas fa-trash"></i>
                 </button>
-                ${badgeHtml}
-                <img src="${imgs[0]}" alt="${prod.name}" class="product-img" onclick="openZoom(${prod.id})">
+                <div class="product-image-wrap">
+                    ${badgeHtml}
+                    <img src="${imgs[0]}" alt="${escapeHtml(prod.name)}" class="product-img" onclick="openZoom(${prod.id})">
+                </div>
                 <div class="product-body">
-                    <span class="product-cat">${prod.category}</span>
-                    <h3 class="product-title">${prod.name}</h3>
-                    <p class="product-desc">${prod.desc}</p>
+                    <span class="product-cat">${escapeHtml(prod.category)}</span>
+                    <h3 class="product-title">${escapeHtml(prod.name)}</h3>
+                    <p class="product-desc">${escapeHtml(prod.desc)}</p>
                     <div class="product-footer">
                         <span class="product-price">${prod.price} TND</span>
                         <button class="btn btn-primary" onclick="addToCart(${prod.id})">
@@ -223,7 +254,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm("Supprimer ce produit ?")) {
             products = products.filter(p => p.id !== id);
             localStorage.setItem("shop_products", JSON.stringify(products));
+            renderCategories();
             renderProducts(searchInput.value);
+            showToast("Produit supprimé");
         }
     };
 
@@ -232,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (product) {
             cart.push(product);
             updateCartUI();
+            showToast(`${product.name} ajouté au panier`);
         }
     };
 
@@ -276,6 +310,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     searchInput.addEventListener("input", (e) => renderProducts(e.target.value));
+    categoryList.addEventListener("click", (e) => {
+        const chip = e.target.closest(".category-chip");
+        if (!chip) return;
+        activeCategory = chip.dataset.category;
+        renderCategories();
+        renderProducts(searchInput.value);
+    });
     openAddModalBtn.addEventListener("click", () => addProductModal.classList.add("active"));
     closeAddModal.addEventListener("click", () => addProductModal.classList.remove("active"));
     openCartBtn.addEventListener("click", () => {
@@ -284,5 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     closeCartModal.addEventListener("click", () => cartModal.classList.remove("active"));
 
+    renderCategories();
     renderProducts();
 });
